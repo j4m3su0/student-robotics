@@ -1,23 +1,24 @@
 # Allows us to interact with robot hardware (motors, servos, camera):
-from sr.robot3 import *
+from sr.robot3 import * 
 robot = Robot()
 
-# =======================================================================================
+#=======================================================================================
 
 # Contents:
+
 #   - SUBROUTINES FOR BASIC MOVEMENTS (Done)
 #   - SUBROUTINES FOR A SPECIFIC COMBINATION OF MOVEMENTS (TEST)
 #   - SUBROUTINES FOR RECORDING OR EDITING DATA (Done)
 #   - SUBROUTINES FOR ASTEROIDS (Done)
-#   - SUBROUTINES FOR HOME PLANET (Done)
+#   - SUBROUTINES FOR HOME PLANET (Done) 
 #   - SUBROUTINES FOR SPACESHIP (WIP)
 #   - SUBROUTINES FOR EGG (WIP)
-#   - SUBROUTINES FOR ENEMY PLANET (WIP)
 #   - ASSIGNING ROBOT HARDWARE (Done)
 #   - INITIALIZING VARIABLES (Done)
 #   - MAIN PROGRAM (WIP)
 
-# =======================================================================================
+
+#=======================================================================================
 
 # SUBROUTINES FOR BASIC MOVEMENTS (Done)
 
@@ -49,7 +50,7 @@ def open_clamps():
     left_clamp.position = -1
     right_clamp.position = -1
 
-def raise_clamps(lift_position):
+def raise_clamps(lift_position): 
     lift.position = lift_position
 
 def lower_clamps(): # To rest position
@@ -78,7 +79,7 @@ def deposit_object_into_planet(): # Done
     stop_robot()
 
 def clamp_onto_team_spaceship(): # TEST
-    raise_clamps(1)
+    raise_clamps(1) 
     robot.sleep(3)
     move_robot()
     robot.sleep(0.2)
@@ -100,8 +101,6 @@ def deposit_team_spaceship(): # TEST
     reverse_robot()
     robot.sleep(1)
     stop_robot()
-
-# =======================================================================================
 
 # SUBROUTINES FOR RECORDING OR EDITING DATA (Done)
 
@@ -141,62 +140,59 @@ def update_points(asteroid_marker_number, points, point_change): # Done
     elif point_change == -12:
         asteroids_in_home_planet_marker_numbers.remove(asteroid_marker_number)
     print(f"Asteroid in spaceship marker numbers: \
-    {asteroids_in_spaceship_marker_numbers}")
+  {asteroids_in_spaceship_marker_numbers}")
     print(f"Asteroid in home planet marker numbers: \
-    {asteroids_in_home_planet_marker_numbers}")
+  {asteroids_in_home_planet_marker_numbers}")
     print(f"Current points: {points}")
     return points
-
-# =======================================================================================
 
 # SUBROUTINES FOR ASTEROIDS (WIP)
 
 def face_closest_asteroid(points): # Done
-    # Turns until at least one asteroid is in view:
-    rotate_left(0.2)
-    asteroid_in_view = None
-    while asteroid_in_view is not True:
-        view = take_photo()
-        for marker in view:
-            if (marker.id in asteroid_marker_numbers
-            and marker.id not in asteroids_in_spaceship_marker_numbers
-            and marker.id not in asteroids_in_home_planet_marker_numbers
-            and not marker.position.vertical_angle > 0.1):
-                asteroid_in_view = True
-        stop_robot()
-    # Finds the asteroid in view with the closest distance:
-    view = take_photo()
-    distance_from_asteroid = None
-    asteroid_marker_number = None
-    asteroid_distances = []
-    for marker in view:
-        if (marker.id in asteroid_marker_numbers
-        and marker.id not in asteroids_in_spaceship_marker_numbers
-        and marker.id not in asteroids_in_home_planet_marker_numbers
-        and not marker.position.vertical_angle > 0.1):
-            distance_from_asteroid = marker.position.distance
-            asteroid_distances.append(distance_from_asteroid)
-    asteroid_distances.sort()
-    closest_asteroid_distance = asteroid_distances[0]
-    for marker in view:
-        if (marker.position.distance == closest_asteroid_distance
-        and marker.id in asteroid_marker_numbers
-        and marker.id not in asteroids_in_spaceship_marker_numbers
-        and marker.id not in asteroids_in_home_planet_marker_numbers
-        and not marker.position.vertical_angle > 0.1):
-            asteroid_marker_number = marker.id
-    print(f"Closest asteroid marker number: {asteroid_marker_number}")
-    # Removes added points for asteroids that the robot failed to take:
-    view = take_photo()
-    for marker in view:
-        if marker.id in asteroids_in_spaceship_marker_numbers:
-            points = update_points(marker.id, points, -40)
-        if marker.id in asteroids_in_home_planet_marker_numbers:
-            points = update_points(marker.id, points, -12)
-    return asteroid_marker_number, points
+  # Turns until at least one asteroid is in view:
+  rotate_left(0.2)
+  asteroid_in_view = None
+  while asteroid_in_view is not True:
+      view = take_photo()
+      for marker in view:
+          if (marker.id in asteroid_marker_numbers
+          and marker.id not in asteroids_in_spaceship_marker_numbers
+          and marker.id not in asteroids_in_home_planet_marker_numbers):
+              asteroid_in_view = True
+  stop_robot()
+  # Finds the asteroid in view with the closest distance:
+  view = take_photo()
+  distance_from_asteroid = None
+  asteroid_marker_number = None
+  asteroid_distances = []
+  for marker in view:
+      if (marker.id in asteroid_marker_numbers
+      and marker.id not in asteroids_in_spaceship_marker_numbers
+      and marker.id not in asteroids_in_home_planet_marker_numbers):
+          distance_from_asteroid = marker.position.distance
+          asteroid_distances.append(distance_from_asteroid)
+  asteroid_distances.sort()
+  closest_asteroid_distance = asteroid_distances[0]
+  for marker in view:
+      if (marker.position.distance == closest_asteroid_distance
+      and marker.id in asteroid_marker_numbers
+      and marker.id not in asteroids_in_spaceship_marker_numbers
+      and marker.id not in asteroids_in_home_planet_marker_numbers):
+          asteroid_marker_number = marker.id 
+  print(f"Closest asteroid marker number: {asteroid_marker_number}")
+  # Removes added points for asteroids that the robot failed to take:
+  view = take_photo()
+  for marker in view:
+      if marker.id in asteroids_in_spaceship_marker_numbers:
+          points = update_points(marker.id, points, -40)
+      if marker.id in asteroids_in_home_planet_marker_numbers:
+          points = update_points(marker.id, points, -12)
+  return asteroid_marker_number, points
+
 
 def travel_to_closest_asteroid(asteroid_marker_number, asteroid_has_been_stolen): # Done
     move_robot()
+    marker_is_in_spaceship = False
     asteroid_has_been_stolen = False
     previous_distance_from_asteroid = float('inf')
     current_distance_from_asteroid = float('inf')
@@ -209,15 +205,19 @@ def travel_to_closest_asteroid(asteroid_marker_number, asteroid_has_been_stolen)
         for marker in view:
             if (marker.id == asteroid_marker_number
                 and marker.id not in asteroids_in_spaceship_marker_numbers
-                and marker.id not in asteroids_in_home_planet_marker_numbers
-                and not marker.position.vertical_angle > 0.1):
+                and marker.id not in asteroids_in_home_planet_marker_numbers):
                 view_of_closest_asteroid.append(marker.id)
+                if marker.position.distance < 3000 and not marker_is_in_spaceship:
+                   if marker.position.vertical_angle > 0.1:
+                      marker_is_in_spaceship = True
+                      asteroid_has_been_stolen = True
+                      asteroids_in_spaceship_marker_numbers.append(marker.id)            
+                      break
         # Corrects orientation to face asteroid while moving:
         for marker in view:
             if (marker.id == asteroid_marker_number
                 and marker.id not in asteroids_in_spaceship_marker_numbers
-                and marker.id not in asteroids_in_home_planet_marker_numbers
-                and not marker.position.vertical_angle > 0.1):
+                and marker.id not in asteroids_in_home_planet_marker_numbers):
                 angle_from_robot = marker.position.horizontal_angle
                 if angle_from_robot > 0.1: # Right
                     rotate_right(0.3)
@@ -236,7 +236,7 @@ def travel_to_closest_asteroid(asteroid_marker_number, asteroid_has_been_stolen)
         if count > 3:
             reverse_robot()
             robot.sleep(2)
-            stop_robot
+            stop_robot()
             break
         # Checks whether closest asteroid is no longer in view:
         if asteroid_marker_number not in view_of_closest_asteroid:
@@ -247,13 +247,11 @@ def travel_to_closest_asteroid(asteroid_marker_number, asteroid_has_been_stolen)
             stop_robot()
             at_asteroid = True
     # Checks if asteroid has been stolen by an enemy while travelling to it:
-    if current_distance_from_asteroid > 700 or count > 3:
+    if current_distance_from_asteroid > 700 or count > 3 or marker_is_in_spaceship:
         asteroid_has_been_stolen = True
     elif current_distance_from_asteroid < 700:
         asteroid_has_been_stolen = False
     return asteroid_has_been_stolen
-
-# =======================================================================================
 
 # SUBROUTINES FOR HOME PLANET (Done)
 
@@ -309,23 +307,10 @@ def travel_to_planet(arena_boundary_marker_number): # Done
                     break
         stop_robot()
         at_planet = True
-
-def face_enemy_planet(): # Done
-    # Turns until the arena boundary marker numbers for the enemy planet is in view:
-    rotate_right(0.2)
-    arena_boundary_marker_number = None
-    enemy_planet_in_view = None
-    while enemy_planet_in_view is not True:
-        view = take_photo()
-        for marker in view:
-            if (marker.id in list(range(0,28)) and marker.id not in arena_boundary_marker_numbers):
-                arena_boundary_marker_number = marker.id
-                enemy_planet_in_view = True
-    stop_robot()
-    print(f"Enemy arena boundary marker number: {arena_boundary_marker_number}")
-    return arena_boundary_marker_number
-
-# =======================================================================================
+        # Checks for asteroid that have accidently been dragged by robot to the home planet:
+        for marker in robot.camera.see():
+           if not (marker.id in arena_boundary_marker_numbers or marker.id in asteroids_in_home_planet_marker_numbers or marker.id in asteroids_in_spaceship_marker_numbers):
+              asteroids_in_home_planet_marker_numbers.append(marker.id)
 
 # SUBROUTINES FOR SPACESHIP (Done)
 
@@ -341,9 +326,9 @@ def face_team_spaceship(team_spaceship_marker_number, team_spaceship_in_home_pla
             view = take_photo()
             for marker in view:
                 range = marker.position.distance
-                if ((team_spaceship_marker_number is None
-                    and marker.id in spaceship_marker_numbers
-                    and range < 1700)
+                if ((team_spaceship_marker_number is None 
+                    and marker.id in spaceship_marker_numbers 
+                    and range < 1700) 
                     or (marker.id == team_spaceship_marker_number
                     and range < 1700)):
                     team_spaceship_in_home_planet = True
@@ -354,7 +339,7 @@ def face_team_spaceship(team_spaceship_marker_number, team_spaceship_in_home_pla
                     team_spaceship_in_view = True
                     break
                 elif (marker.id == team_spaceship_marker_number
-                    and range > 1700):
+                        and range > 1700):
                     team_spaceship_in_home_planet = False
                     print("Team spaceship is not in home planet")
                     stop_robot()
@@ -381,7 +366,7 @@ def face_team_spaceship(team_spaceship_marker_number, team_spaceship_in_home_pla
             for marker in view:
                 if marker.id == team_spaceship_marker_number:
                     stop_robot()
-                    team_spaceship_in_view = True
+                    team_spaceship_in_view = True   
     if team_spaceship_in_home_planet is False:
         team_spaceship_has_been_stolen = True
     return team_spaceship_marker_number, team_spaceship_in_home_planet, team_spaceship_has_been_stolen
@@ -415,8 +400,6 @@ def travel_to_spaceship(spaceship_marker_number, team_spaceship_in_home_planet):
                     distance_from_spaceship = marker.position.distance
         stop_robot()
         at_spaceship = True
-
-# =======================================================================================
 
 # SUBROUTINES FOR EGG (WIP)
 
@@ -479,10 +462,8 @@ def travel_to_egg(): # Done
 
                 if marker.position.distance <= 300:
                     at_egg = True
-
                     stop_robot()
                     print("Stopped robot at egg")
-
                     break
                 elif marker.position.horizontal_angle > 0.1:
                     rotate_right(0.1)
@@ -495,10 +476,8 @@ def travel_to_egg(): # Done
 
         if not marker_in_view:
             at_egg = True
-
             stop_robot()
             print("Stopped robot at egg")
-
             break
 
     close_clamps()
@@ -507,12 +486,12 @@ def travel_to_egg(): # Done
     robot.sleep(1)
     stop_robot()
 
-# =======================================================================================
-
-# SUBROUTINES FOR ENEMY PLANET (WIP)
+# SUBROUTINES FOR ENEMY PLANET
 
 def face_enemy_planet():
-    # Turns until the arena boundary marker numbers for the enemy planet is in view:
+    # Turns until the arena boundary marker numbers...
+    # ...for the enemy planet is in view:
+  
     rotate_right(0.2)
     angle = None
     distance = None
@@ -520,7 +499,7 @@ def face_enemy_planet():
     marker_number = None
     distances = []
     marker_in_view = False
-
+  
     while True:
         while marker_in_view is False:
             robot.sleep(0.1)
@@ -541,19 +520,19 @@ def face_enemy_planet():
                             stop_robot()
                             break
         break
-
+  
     for marker in robot.camera.see():
         if marker.id == marker_number:
             if marker.position.horizontal_angle > 0:
                 rotate_right(0.2)
-
+  
                 for marker in robot.camera.see():
                     if marker.id == marker_number:
                         if marker.position.horizontal_angle < 0.1 and marker.position.horizontal_angle > -0.1:
                             stop_robot()
             else:
                 rotate_left(0.2)
-
+  
                 for marker in robot.camera.see():
                     if marker.id == marker_number:
                         if marker.position.horizontal_angle < 0.1 and marker.position.horizontal_angle > -0.1:
@@ -564,18 +543,17 @@ def face_enemy_planet():
 def travel_to_enemy_planet(marker_number):
     at_planet = False
     move_robot()
-
+  
     count = 0
     while not at_planet:
         robot.sleep(0.1)
         marker_in_view = False
-
+  
         distanceAfter = 1
         distanceBefore = None
-
+  
         if count >= 10:
-            # The distance of the egg has not changed for a while,
-            # but it is moving towards the egg, so the robot must be stuck
+            # The distance of the egg has not changed for a while, but it is moving towards the egg, so the robot must be stuck
             stop_robot()
             close_clamps()
             robot.sleep(1)
@@ -587,28 +565,28 @@ def travel_to_enemy_planet(marker_number):
             robot.sleep(1)
             stop_robot()
             move_robot()
-
+  
             count = 0
             distanceAfter = 1
             distanceBefore = None
-
+  
         for marker in robot.camera.see():
             if marker.id == marker_number:
                 marker_in_view = True
-
+  
                 if distanceAfter == distanceBefore:
                     count += 1
                 else:
                     distanceBefore = distanceAfter
-
+  
                 distanceAfter = marker.position.distance
-
+  
                 if marker.position.distance <= 750:
                     at_planet = True
-
+  
                     stop_robot()
                     print("Stopped robot at enemy planet")
-
+  
                     break
                 elif marker.position.horizontal_angle > 0.1:
                     rotate_right(0.1)
@@ -618,13 +596,13 @@ def travel_to_enemy_planet(marker_number):
                     rotate_left(0.1)
                     robot.sleep(0.1)
                     move_robot()
-
+  
         if not marker_in_view:
             reverse_robot()
             robot.sleep(0.5)
             face_enemy_planet()
 
-# =======================================================================================
+#=======================================================================================
 
 # ASSIGNING ROBOT HARDWARE (Done)
 
@@ -635,7 +613,7 @@ left_clamp = robot.servo_board.servos[0]
 right_clamp = robot.servo_board.servos[1]
 lift = robot.servo_board.servos[2]
 
-# =======================================================================================
+#=======================================================================================
 
 # INITIALIZING VARIABLES (Done)
 
@@ -665,7 +643,7 @@ team_spaceship_has_been_stolen = False
 egg_in_home_planet = False
 egg_in_team_spaceship = False
 
-# =======================================================================================
+#=======================================================================================
 
 # MAIN PROGRAM (WIP)
 
@@ -735,6 +713,7 @@ face_egg()
 travel_to_egg()
 x = face_enemy_planet()
 travel_to_enemy_planet(x)
+open_clamps()
 # Records the duration of the match at that point
 duration_of_match = record_time(start_of_match)
 print(f'Duration of match: {duration_of_match}')
